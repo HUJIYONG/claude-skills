@@ -1,0 +1,90 @@
+---
+name: arxiv-translator
+description: Translate English LaTeX academic papers (arXiv sources) into Chinese while maintaining perfect compilability, layout integrity, and academic accuracy. Use when users request translating LaTeX papers, arXiv papers, or academic documents from English to Chinese. Handles CJK configuration, preserves math equations, citations, and formatting.
+---
+
+# ArXiv Translator
+
+Translates English LaTeX academic papers into Chinese while maintaining compilability and formatting integrity.
+
+## Workflow
+
+### Phase 1: Exploration & Setup
+
+1. **Scan project structure**
+   - Run `ls -R` to understand directory layout
+   - Identify main entry file (`main.tex`, `paper.tex`, or `ms.tex`)
+
+2. **Replicate structure**
+   - Create `paper_cn/` directory in current root
+   - Recreate exact subdirectory structure (e.g., `sections/`, `figures/`)
+   - Copy all non-text files: `.pdf`, `.png`, `.bib`, `.bst`, `.cls`, `.sty`
+   - Do NOT copy `.tex` files yet
+
+### Phase 2: CJK Configuration
+
+Determine compilation engine from file contents (usually `pdflatex` or `xelatex`).
+
+**For pdflatex:**
+```latex
+% Add to preamble
+\usepackage{CJKutf8}
+
+% Wrap document content
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+% ... content ...
+\end{CJK*}
+\end{document}
+```
+
+**For xelatex:**
+```latex
+% Add to preamble
+\usepackage{xeCJK}
+\setCJKmainfont{FandolSong}
+```
+
+Apply these changes to translated `main.tex`.
+
+### Phase 3: Translation Rules
+
+For each `.tex` file:
+
+**Translate:**
+- English prose → fluent, professional Chinese
+- Figure/table captions
+- Algorithm comments (logic explanations only)
+- Section titles and headings
+
+**NEVER translate:**
+- Math equations in `$...$` or `$$...$$`
+- `\cite{...}`, `\ref{...}`, `\label{...}`
+- Researcher names, institution names
+- Algorithm proper names (e.g., "Transformer", "ResNet")
+- Custom macro definitions (e.g., `\newcommand{\R}{\mathbb{R}}`)
+- Code keywords in algorithms (if, while, return)
+
+**Formatting:**
+- Maintain identical indentation and spacing
+- Preserve all LaTeX structure exactly
+
+### Phase 4: Compilation & Verification
+
+1. **Sanity check**: Compare file lists between source and `paper_cn/`
+2. **Compile sequence**:
+   ```bash
+   cd paper_cn
+   pdflatex main.tex  # or xelatex
+   bibtex main
+   pdflatex main.tex
+   pdflatex main.tex
+   ```
+3. **Debug**: If errors occur, read log, fix LaTeX syntax, recompile
+4. **Verify**: Check for "Missing character" warnings for Chinese text
+
+## Interaction Guidelines
+
+- **Transparency**: Announce which file is currently being processed
+- **Proactive**: For complex templates (e.g., `ieeeaccess.cls`), automatically patch for CJK compatibility
+- **Final output**: Confirm PDF location, offer to provide paper summary in Chinese
