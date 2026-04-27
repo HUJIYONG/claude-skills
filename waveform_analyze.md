@@ -41,6 +41,10 @@ Examples:
 > **Note:** In bash, `$` in condition strings must be escaped as `\$` (e.g. `\$past()`).
 ---
 ## Techniques
+### 0. List Signals in some Hierarchy:
+```
+waveform-cli open_waveform foo.vcd --alias w -- list_signals w --hierarchy "tb.i_dut.i_somemodule" --recursive true --limit 300 
+```
 ### 1. Get All Events of a Signal
 Use `find_signal_events` to list every value change of a signal. Useful for control signals such as reset, enable, or valid.
 ```bash
